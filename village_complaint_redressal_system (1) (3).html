@@ -1,0 +1,536 @@
+
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-sans)}
+  .nav{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:500;color:var(--color-text-primary)}
+  .nav-logo .dot{width:32px;height:32px;border-radius:8px;background:#1D9E75;display:flex;align-items:center;justify-content:center;color:#fff}
+  .nav-links{display:flex;gap:4px}
+  .nav-link{padding:6px 14px;border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;color:var(--color-text-secondary);border:none;background:transparent;transition:background 0.15s}
+  .nav-link:hover,.nav-link.active{background:var(--color-background-secondary);color:var(--color-text-primary)}
+  .nav-btn{background:#1D9E75;color:#fff;border:none;padding:7px 16px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer}
+  .page{display:none;padding:24px}
+  .page.active{display:block}
+
+  /* Hero */
+  .hero{background:linear-gradient(135deg,#1D9E75 0%,#0F6E56 100%);border-radius:var(--border-radius-lg);padding:48px 40px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden}
+  .hero h1{font-size:28px;font-weight:500;margin-bottom:8px}
+  .hero p{font-size:15px;opacity:0.85;margin-bottom:24px;max-width:480px}
+  .hero-btns{display:flex;gap:12px}
+  .btn-white{background:#fff;color:#0F6E56;border:none;padding:10px 20px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer}
+  .btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.6);padding:10px 20px;border-radius:var(--border-radius-md);font-size:14px;cursor:pointer}
+  .hero-badge{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.12);border-radius:var(--border-radius-lg);padding:20px 28px;text-align:center}
+  .hero-badge .num{font-size:36px;font-weight:500}
+  .hero-badge .lbl{font-size:12px;opacity:0.8;margin-top:4px}
+
+  /* Stats */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+  .stat-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px 18px}
+  .stat-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .stat-num{font-size:24px;font-weight:500;color:var(--color-text-primary)}
+  .stat-sub{font-size:11px;margin-top:4px}
+
+  /* Categories */
+  .section-title{font-size:16px;font-weight:500;margin-bottom:16px;color:var(--color-text-primary)}
+  .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+  .cat-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:20px 16px;cursor:pointer;transition:border-color 0.15s;text-align:center}
+  .cat-card:hover{border-color:var(--color-border-secondary)}
+  .cat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:20px}
+  .cat-name{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+  .cat-count{font-size:12px;color:var(--color-text-secondary)}
+
+  /* Complaints list */
+  .complaints-list{display:flex;flex-direction:column;gap:10px}
+  .complaint-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px 18px;display:flex;align-items:flex-start;gap:14px;cursor:pointer;transition:border-color 0.15s}
+  .complaint-card:hover{border-color:var(--color-border-secondary)}
+  .c-thumb{width:56px;height:56px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px}
+  .c-body{flex:1;min-width:0}
+  .c-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+  .c-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+  .badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+  .badge-open{background:#E1F5EE;color:#0F6E56}
+  .badge-prog{background:#FAEEDA;color:#854F0B}
+  .badge-done{background:#EAF3DE;color:#3B6D11}
+  .badge-rej{background:#FCEBEB;color:#A32D2D}
+  .c-meta{font-size:12px;color:var(--color-text-secondary);display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+  .c-right{flex-shrink:0;text-align:right}
+  .c-id{font-size:11px;color:var(--color-text-tertiary)}
+  .c-date{font-size:11px;color:var(--color-text-secondary);margin-top:4px}
+
+  /* Form */
+  .form-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:28px 32px;max-width:640px}
+  .form-row{margin-bottom:18px}
+  .form-label{font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;display:block}
+  .form-input{width:100%;padding:9px 12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+  .form-input:focus{outline:none;border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,0.12)}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .upload-box{border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:28px;text-align:center;cursor:pointer;background:var(--color-background-secondary)}
+  .upload-box i{font-size:28px;color:var(--color-text-secondary);display:block;margin-bottom:8px}
+  .upload-box p{font-size:13px;color:var(--color-text-secondary)}
+  .submit-btn{background:#1D9E75;color:#fff;border:none;padding:11px 28px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;width:100%}
+  .submit-btn:hover{background:#0F6E56}
+
+  /* Track page */
+  .track-input-row{display:flex;gap:10px;margin-bottom:24px}
+  .track-input-row input{flex:1;padding:9px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+  .track-input-row input:focus{outline:none;border-color:#1D9E75}
+  .track-btn{background:#1D9E75;color:#fff;border:none;padding:9px 20px;border-radius:var(--border-radius-md);font-size:14px;cursor:pointer}
+  .timeline{position:relative;padding-left:28px;margin-top:12px}
+  .timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:1.5px;background:var(--color-border-tertiary)}
+  .tl-item{position:relative;margin-bottom:20px}
+  .tl-dot{position:absolute;left:-24px;top:2px;width:14px;height:14px;border-radius:50%;border:2px solid #1D9E75;background:var(--color-background-primary)}
+  .tl-dot.done{background:#1D9E75}
+  .tl-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+  .tl-date{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+  .tl-desc{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
+
+  /* Toast */
+  .toast{position:fixed;bottom:20px;right:20px;background:#1D9E75;color:#fff;padding:12px 20px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;display:none;z-index:999}
+  .toast.show{display:block}
+
+  /* Admin table */
+  .admin-table{width:100%;border-collapse:collapse;font-size:13px}
+  .admin-table th{text-align:left;padding:8px 12px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary);font-weight:500}
+  .admin-table td{padding:10px 12px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+  .admin-table tr:hover td{background:var(--color-background-secondary)}
+  select.status-sel{border:0.5px solid var(--color-border-secondary);border-radius:6px;padding:4px 8px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+
+  .two-col{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+</style>
+
+<h2 class="sr-only">Village Complaint Redressal System — citizen portal for reporting and tracking local infrastructure issues</h2>
+
+<div class="nav">
+  <div class="nav-logo">
+    <div class="dot"><i class="ti ti-building-community" aria-hidden="true" style="font-size:18px"></i></div>
+    GramSeva Portal
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="nav('home')">Home</button>
+    <button class="nav-link" onclick="nav('submit')">File Complaint</button>
+    <button class="nav-link" onclick="nav('track')">Track</button>
+    <button class="nav-link" onclick="nav('admin')">Admin</button>
+  </div>
+  <button class="nav-btn" onclick="nav('submit')"><i class="ti ti-plus" aria-hidden="true"></i> New Complaint</button>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h1>Report. Track. Resolve.</h1>
+    <p>Raise infrastructure complaints for your village — roads, drainage, streetlights and more. Track progress in real time.</p>
+    <div class="hero-btns">
+      <button class="btn-white" onclick="nav('submit')">File a Complaint</button>
+      <button class="btn-outline" onclick="nav('track')">Track Status</button>
+    </div>
+    <div class="hero-badge">
+      <div class="num">247</div>
+      <div class="lbl">Issues resolved</div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label"><i class="ti ti-file-description" aria-hidden="true" style="color:#1D9E75"></i> Total Complaints</div>
+      <div class="stat-num">312</div>
+      <div class="stat-sub" style="color:#1D9E75">↑ 18 this week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><i class="ti ti-clock" aria-hidden="true" style="color:#BA7517"></i> In Progress</div>
+      <div class="stat-num">48</div>
+      <div class="stat-sub" style="color:#BA7517">Active work orders</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><i class="ti ti-circle-check" aria-hidden="true" style="color:#3B6D11"></i> Resolved</div>
+      <div class="stat-num">247</div>
+      <div class="stat-sub" style="color:#3B6D11">79% resolution rate</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><i class="ti ti-hourglass" aria-hidden="true" style="color:#993C1D"></i> Avg. Resolution</div>
+      <div class="stat-num">4.2d</div>
+      <div class="stat-sub" style="color:var(--color-text-secondary)">Days per issue</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title">Issue Categories</div>
+      <div class="cat-grid">
+        <div class="cat-card" onclick="filterAndGo('Road')">
+          <div class="cat-icon" style="background:#FAECE7"><i class="ti ti-road" aria-hidden="true" style="color:#D85A30"></i></div>
+          <div class="cat-name">Roads</div>
+          <div class="cat-count">84 complaints</div>
+        </div>
+        <div class="cat-card" onclick="filterAndGo('Streetlight')">
+          <div class="cat-icon" style="background:#FAEEDA"><i class="ti ti-bulb" aria-hidden="true" style="color:#BA7517"></i></div>
+          <div class="cat-name">Streetlights</div>
+          <div class="cat-count">61 complaints</div>
+        </div>
+        <div class="cat-card" onclick="filterAndGo('Drainage')">
+          <div class="cat-icon" style="background:#E6F1FB"><i class="ti ti-droplet" aria-hidden="true" style="color:#185FA5"></i></div>
+          <div class="cat-name">Drainage</div>
+          <div class="cat-count">73 complaints</div>
+        </div>
+        <div class="cat-card" onclick="filterAndGo('Water')">
+          <div class="cat-icon" style="background:#E1F5EE"><i class="ti ti-wave-square" aria-hidden="true" style="color:#0F6E56"></i></div>
+          <div class="cat-name">Water Supply</div>
+          <div class="cat-count">52 complaints</div>
+        </div>
+        <div class="cat-card" onclick="filterAndGo('Sanitation')">
+          <div class="cat-icon" style="background:#FBEAF0"><i class="ti ti-trash" aria-hidden="true" style="color:#993556"></i></div>
+          <div class="cat-name">Sanitation</div>
+          <div class="cat-count">30 complaints</div>
+        </div>
+        <div class="cat-card" onclick="filterAndGo('Other')">
+          <div class="cat-icon" style="background:#F1EFE8"><i class="ti ti-dots" aria-hidden="true" style="color:#5F5E5A"></i></div>
+          <div class="cat-name">Other</div>
+          <div class="cat-count">12 complaints</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Recent Activity</div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="recent-feed"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT -->
+<div class="page" id="page-submit">
+  <div style="margin-bottom:20px">
+    <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">File a new complaint</div>
+    <div style="font-size:13px;color:var(--color-text-secondary)">Fill in the details below. You'll receive a complaint ID to track progress.</div>
+  </div>
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Full name</label>
+        <input class="form-input" id="f-name" placeholder="e.g. Ramesh Kumar" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Mobile number</label>
+        <input class="form-input" id="f-phone" placeholder="10-digit number" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Village / Ward</label>
+      <input class="form-input" id="f-village" placeholder="e.g. Ward 4, Rampur" />
+    </div>
+    <div class="form-row">
+      <label class="form-label">Issue category</label>
+      <select class="form-input" id="f-cat">
+        <option value="">Select category</option>
+        <option>Road</option>
+        <option>Streetlight</option>
+        <option>Drainage</option>
+        <option>Water Supply</option>
+        <option>Sanitation</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Complaint description</label>
+      <textarea class="form-input" id="f-desc" rows="3" placeholder="Describe the issue in detail — location, severity, how long it's been present..."></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Upload photo</label>
+      <div class="upload-box" id="upload-box" onclick="document.getElementById('file-in').click()">
+        <i class="ti ti-photo-up" aria-hidden="true"></i>
+        <p id="upload-label">Click to upload photo evidence</p>
+        <p style="font-size:11px;color:var(--color-text-tertiary);margin-top:4px">JPG, PNG up to 5 MB</p>
+      </div>
+      <input type="file" id="file-in" accept="image/*" style="display:none" onchange="handleFile(this)" />
+    </div>
+    <div class="form-row" style="margin-bottom:0">
+      <button class="submit-btn" onclick="submitComplaint()"><i class="ti ti-send" aria-hidden="true"></i> Submit Complaint</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRACK -->
+<div class="page" id="page-track">
+  <div style="margin-bottom:20px">
+    <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">Track your complaint</div>
+    <div style="font-size:13px;color:var(--color-text-secondary)">Enter your complaint ID to view real-time status and updates.</div>
+  </div>
+  <div class="track-input-row">
+    <input id="track-id" placeholder="e.g. GS-2024-0042" onkeydown="if(event.key==='Enter')doTrack()" />
+    <button class="track-btn" onclick="doTrack()"><i class="ti ti-search" aria-hidden="true"></i> Track</button>
+  </div>
+  <div id="track-result" style="display:none">
+    <div class="complaint-card" style="cursor:default;margin-bottom:20px">
+      <div class="c-thumb" id="tr-icon" style="background:#E1F5EE"></div>
+      <div class="c-body">
+        <div class="c-top">
+          <span class="c-title" id="tr-title"></span>
+          <span class="badge" id="tr-badge"></span>
+        </div>
+        <div style="font-size:13px;color:var(--color-text-secondary);margin-top:4px" id="tr-desc"></div>
+        <div class="c-meta">
+          <span id="tr-village"></span>
+          <span id="tr-date"></span>
+        </div>
+      </div>
+      <div class="c-right">
+        <div class="c-id" id="tr-id"></div>
+      </div>
+    </div>
+    <div class="section-title">Progress timeline</div>
+    <div class="timeline" id="track-timeline"></div>
+  </div>
+  <div id="track-none" style="display:none;text-align:center;padding:40px;color:var(--color-text-secondary)">
+    <i class="ti ti-mood-sad" style="font-size:36px;display:block;margin-bottom:12px" aria-hidden="true"></i>
+    <div>No complaint found with that ID. Please check and try again.</div>
+  </div>
+  <div style="margin-top:28px">
+    <div class="section-title">Or browse your complaints</div>
+    <div class="complaints-list" id="complaints-list"></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">Admin dashboard</div>
+      <div style="font-size:13px;color:var(--color-text-secondary)">Manage and update complaint statuses</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <select id="filter-cat" class="form-input" style="width:150px;padding:7px 10px;font-size:13px" onchange="renderAdmin()">
+        <option value="">All categories</option>
+        <option>Road</option><option>Streetlight</option><option>Drainage</option><option>Water Supply</option><option>Sanitation</option><option>Other</option>
+      </select>
+      <select id="filter-status" class="form-input" style="width:140px;padding:7px 10px;font-size:13px" onchange="renderAdmin()">
+        <option value="">All statuses</option>
+        <option>Open</option><option>In Progress</option><option>Resolved</option><option>Rejected</option>
+      </select>
+    </div>
+  </div>
+  <div style="overflow-x:auto;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:4px">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>Category</th><th>Description</th><th>Village</th><th>Filed</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="admin-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS = {
+  Road:{icon:'ti-road',bg:'#FAECE7',color:'#D85A30'},
+  Streetlight:{icon:'ti-bulb',bg:'#FAEEDA',color:'#BA7517'},
+  Drainage:{icon:'ti-droplet',bg:'#E6F1FB',color:'#185FA5'},
+  'Water Supply':{icon:'ti-wave-square',bg:'#E1F5EE',color:'#0F6E56'},
+  Sanitation:{icon:'ti-trash',bg:'#FBEAF0',color:'#993556'},
+  Other:{icon:'ti-dots',bg:'#F1EFE8',color:'#5F5E5A'}
+};
+
+let complaints = [
+  {id:'GS-2024-0001',cat:'Road',title:'Pothole on main road near school',desc:'Large pothole causing accidents. Three vehicles damaged this week.',village:'Ward 1, Rampur',date:'2024-01-03',status:'Resolved',timeline:[
+    {title:'Complaint filed',date:'Jan 3',desc:'Received and logged',done:true},
+    {title:'Assigned to PWD',date:'Jan 4',desc:'Public Works Dept notified',done:true},
+    {title:'Work in progress',date:'Jan 6',desc:'Road repair crew deployed',done:true},
+    {title:'Resolved',date:'Jan 8',desc:'Pothole filled and inspected',done:true}
+  ]},
+  {id:'GS-2024-0042',cat:'Streetlight',title:'3 streetlights non-functional',desc:'Dark stretch from post office to temple, safety risk at night.',village:'Ward 3, Sundarnagar',date:'2024-01-10',status:'In Progress',timeline:[
+    {title:'Complaint filed',date:'Jan 10',desc:'Received and logged',done:true},
+    {title:'Assigned to electrician',date:'Jan 11',desc:'CESU team notified',done:true},
+    {title:'Parts ordered',date:'Jan 12',desc:'Replacement bulbs ordered',done:true},
+    {title:'Repair pending',date:'-',desc:'Awaiting part delivery',done:false}
+  ]},
+  {id:'GS-2024-0071',cat:'Drainage',title:'Blocked drainage causing flooding',desc:'Drainage clogged near market area. Flooding after every rain.',village:'Ward 2, Krishnanagar',date:'2024-01-14',status:'Open',timeline:[
+    {title:'Complaint filed',date:'Jan 14',desc:'Received and logged',done:true},
+    {title:'Inspection scheduled',date:'-',desc:'Awaiting field visit',done:false}
+  ]},
+  {id:'GS-2024-0089',cat:'Water Supply',title:'No water supply for 5 days',desc:'Pipeline burst near old well. Entire street without water.',village:'Ward 5, Ambavadi',date:'2024-01-16',status:'In Progress',timeline:[
+    {title:'Complaint filed',date:'Jan 16',desc:'Received and logged',done:true},
+    {title:'Plumber assigned',date:'Jan 17',desc:'Municipal plumber dispatched',done:true},
+    {title:'Excavation in progress',date:'Jan 18',desc:'Pipeline being located',done:true},
+    {title:'Repair pending',date:'-',desc:'Repair work ongoing',done:false}
+  ]},
+  {id:'GS-2024-0103',cat:'Sanitation',title:'Garbage not collected for 2 weeks',desc:'Waste piling up at community bin. Health hazard.',village:'Ward 4, Ramnagar',date:'2024-01-18',status:'Open',timeline:[
+    {title:'Complaint filed',date:'Jan 18',desc:'Received and logged',done:true}
+  ]},
+  {id:'GS-2024-0115',cat:'Road',title:'Speed bumps needed near school',desc:'Vehicles over-speeding in school zone. Children at risk.',village:'Ward 2, Krishnanagar',date:'2024-01-19',status:'Rejected',timeline:[
+    {title:'Complaint filed',date:'Jan 19',desc:'Received and logged',done:true},
+    {title:'Reviewed',date:'Jan 20',desc:'Under state highway jurisdiction — redirected to district office',done:true}
+  ]}
+];
+
+let currentFilter = '';
+
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>{
+    if(l.textContent.toLowerCase().includes(page==='home'?'home':page==='submit'?'file':page==='track'?'track':'admin')) l.classList.add('active');
+  });
+  if(page==='track') renderList();
+  if(page==='admin') renderAdmin();
+}
+
+function catStyle(cat){return CATS[cat]||CATS['Other']}
+
+function renderList(filter){
+  const list = document.getElementById('complaints-list');
+  const data = filter ? complaints.filter(c=>c.cat===filter) : complaints;
+  list.innerHTML = data.map(c=>`
+    <div class="complaint-card" onclick="quickTrack('${c.id}')">
+      <div class="c-thumb" style="background:${catStyle(c.cat).bg}">
+        <i class="ti ${catStyle(c.cat).icon}" aria-hidden="true" style="font-size:22px;color:${catStyle(c.cat).color}"></i>
+      </div>
+      <div class="c-body">
+        <div class="c-top">
+          <span class="c-title">${c.title}</span>
+          <span class="badge badge-${c.status==='Open'?'open':c.status==='In Progress'?'prog':c.status==='Resolved'?'done':'rej'}">${c.status}</span>
+        </div>
+        <div class="c-meta">
+          <span><i class="ti ti-map-pin" aria-hidden="true" style="font-size:12px"></i> ${c.village}</span>
+          <span><i class="ti ti-calendar" aria-hidden="true" style="font-size:12px"></i> ${c.date}</span>
+          <span><i class="ti ti-tag" aria-hidden="true" style="font-size:12px"></i> ${c.cat}</span>
+        </div>
+      </div>
+      <div class="c-right">
+        <div class="c-id">${c.id}</div>
+        <div class="c-date" style="margin-top:6px;color:#1D9E75;font-size:11px">View →</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterAndGo(cat){
+  nav('track');
+  renderList(cat);
+}
+
+function renderFeed(){
+  const feed = document.getElementById('recent-feed');
+  feed.innerHTML = complaints.slice(-4).reverse().map(c=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)">
+      <div style="width:32px;height:32px;border-radius:8px;background:${catStyle(c.cat).bg};display:flex;align-items:center;justify-content:center">
+        <i class="ti ${catStyle(c.cat).icon}" aria-hidden="true" style="font-size:16px;color:${catStyle(c.cat).color}"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.title}</div>
+        <div style="font-size:11px;color:var(--color-text-secondary)">${c.id}</div>
+      </div>
+      <span class="badge badge-${c.status==='Open'?'open':c.status==='In Progress'?'prog':c.status==='Resolved'?'done':'rej'}" style="font-size:10px">${c.status}</span>
+    </div>
+  `).join('');
+}
+
+function doTrack(){
+  const val = document.getElementById('track-id').value.trim().toUpperCase();
+  const c = complaints.find(x=>x.id===val);
+  document.getElementById('track-result').style.display = c ? 'block' : 'none';
+  document.getElementById('track-none').style.display = c ? 'none' : 'block';
+  if(c) populateTrack(c);
+}
+
+function quickTrack(id){
+  document.getElementById('track-id').value = id;
+  doTrack();
+  window.scrollTo(0,0);
+}
+
+function populateTrack(c){
+  const st = catStyle(c.cat);
+  document.getElementById('tr-icon').innerHTML = `<i class="ti ${st.icon}" aria-hidden="true" style="font-size:22px;color:${st.color}"></i>`;
+  document.getElementById('tr-icon').style.background = st.bg;
+  document.getElementById('tr-title').textContent = c.title;
+  const badges = {Open:'badge-open','In Progress':'badge-prog',Resolved:'badge-done',Rejected:'badge-rej'};
+  document.getElementById('tr-badge').className = 'badge '+badges[c.status];
+  document.getElementById('tr-badge').textContent = c.status;
+  document.getElementById('tr-desc').textContent = c.desc;
+  document.getElementById('tr-village').innerHTML = `<i class="ti ti-map-pin" aria-hidden="true" style="font-size:12px"></i> ${c.village}`;
+  document.getElementById('tr-date').innerHTML = `<i class="ti ti-calendar" aria-hidden="true" style="font-size:12px"></i> Filed: ${c.date}`;
+  document.getElementById('tr-id').textContent = c.id;
+  document.getElementById('track-timeline').innerHTML = c.timeline.map(t=>`
+    <div class="tl-item">
+      <div class="tl-dot ${t.done?'done':''}"></div>
+      <div class="tl-title">${t.title}</div>
+      <div class="tl-date">${t.date}</div>
+      <div class="tl-desc">${t.desc}</div>
+    </div>
+  `).join('');
+}
+
+function renderAdmin(){
+  const fc = document.getElementById('filter-cat').value;
+  const fs = document.getElementById('filter-status').value;
+  const data = complaints.filter(c=>{
+    return (!fc||c.cat===fc) && (!fs||c.status===fs);
+  });
+  document.getElementById('admin-tbody').innerHTML = data.map(c=>`
+    <tr>
+      <td style="font-size:12px;font-family:var(--font-mono)">${c.id}</td>
+      <td><span style="display:flex;align-items:center;gap:6px"><i class="ti ${catStyle(c.cat).icon}" aria-hidden="true" style="font-size:14px;color:${catStyle(c.cat).color}"></i>${c.cat}</span></td>
+      <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.title}</td>
+      <td>${c.village}</td>
+      <td>${c.date}</td>
+      <td>
+        <select class="status-sel" onchange="updateStatus('${c.id}',this.value)">
+          ${['Open','In Progress','Resolved','Rejected'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function updateStatus(id, status){
+  const c = complaints.find(x=>x.id===id);
+  if(c){
+    c.status = status;
+    toast(`Status updated to "${status}" for ${id}`);
+  }
+}
+
+function submitComplaint(){
+  const name = document.getElementById('f-name').value.trim();
+  const cat = document.getElementById('f-cat').value;
+  const desc = document.getElementById('f-desc').value.trim();
+  const village = document.getElementById('f-village').value.trim();
+  if(!name||!cat||!desc||!village){toast('Please fill all required fields','warn');return;}
+  const id = 'GS-2024-0'+String(Math.floor(Math.random()*900)+100);
+  const newC = {
+    id, cat, title: desc.slice(0,50)+(desc.length>50?'...':''),
+    desc, village, date: new Date().toISOString().slice(0,10), status:'Open',
+    timeline:[{title:'Complaint filed',date:new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short'}),desc:'Received and logged',done:true}]
+  };
+  complaints.unshift(newC);
+  document.getElementById('f-name').value='';
+  document.getElementById('f-phone').value='';
+  document.getElementById('f-village').value='';
+  document.getElementById('f-cat').value='';
+  document.getElementById('f-desc').value='';
+  document.getElementById('upload-label').textContent='Click to upload photo evidence';
+  toast(`Complaint filed! Your ID: ${id}`);
+  setTimeout(()=>{
+    document.getElementById('track-id').value=id;
+    nav('track');
+    doTrack();
+  },1200);
+}
+
+function handleFile(input){
+  if(input.files[0]) document.getElementById('upload-label').textContent='📷 '+input.files[0].name;
+}
+
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+renderFeed();
+renderList();
+</script>
